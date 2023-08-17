@@ -133,13 +133,14 @@ pub fn exec(
 
         match result {
             Ok(redeemers) => {
-                let total_budget_used =
-                    redeemers
-                        .iter()
-                        .fold(ExBudget { mem: 0, cpu: 0 }, |accum, curr| ExBudget {
-                            mem: accum.mem + curr.ex_units.mem as i64,
-                            cpu: accum.cpu + curr.ex_units.steps as i64,
-                        });
+                // this should allow N scripts to be
+                let total_budget_used: Vec<ExBudget> = redeemers
+                    .iter()
+                    .map(|curr| ExBudget {
+                        mem: curr.ex_units.mem as i64,
+                        cpu: curr.ex_units.steps as i64,
+                    })
+                    .collect();
 
                 eprintln!("\n");
                 println!(

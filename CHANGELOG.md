@@ -1,9 +1,27 @@
 # Changelog
 
-## v1.0.14-alpha - 2023-MM-DD
+## v1.0.14-alpha - 2023-08-16
+
+### Added
+
+- **aiken**: `new` command now fetches latest stdlib version
+- **aiken-lang**: new `and` and `or` chaining
+  ```
+  and {
+    1 == 1,
+    or {
+      2 == 2,
+      3 != 2,
+      True,
+    },
+  }
+  ```
 
 ### Changed
 
+- **aiken-lang**: significantly improved pattern matching exhuastiveness checking
+- **aiken-lang**: Tx Simulate now returns a list of execution budgets for each
+  redeemer instead of calculating the total units required to run all the scripts.
 - **aiken-lang**: Now code gen uses a tree abstraction to build the Aiken
   Intermediary Representation. This now fixes quite a number of minor issues
   while making the code more maintainable. This is a large leap towards a stable
@@ -20,6 +38,13 @@
 
 - **aiken-lang**: Recursion optimization to prevent static parameters from being
   passed through every recursion
+
+### Fixed
+
+- **aiken-lang**: aliased import of single type throws compiler error
+- **aiken-lsp**: fix diagnostics and formatting on windows vscode
+- **aiken**: decode should always print to textual
+- **uplc**: pair type formatting
 
 ## v1.0.13-alpha - 2023-07-15
 
