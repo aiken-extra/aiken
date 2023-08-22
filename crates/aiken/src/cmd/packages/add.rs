@@ -31,25 +31,27 @@ pub struct Args {
 pub fn exec(args: Args) -> miette::Result<()> {
     let root = PathBuf::from(".");
 
+    let default_branch = || match DefaultBranch::of(&args.package) {
+        Ok(branch) => branch.commit.sha,
+        _ => "main".to_string(),
+    };
+    let default_version = || {
+        if let Ok(release) = LatestRelease::of(&args.package) {
+            return release.tag_name;
+        }
+
+        if let Ok(releases) = Releases::of(&args.package) {
+            if let Some(release) = releases.first() {
+                return release.tag_name.clone();
+            }
+        }
+
+        default_branch()
+    };
+
     let dependency = Dependency {
         name: PackageName::from_str(&args.package)?,
-        version: args.version.unwrap_or_else(|| {
-            if let Ok(release) = LatestRelease::of(&args.package) {
-                return release.tag_name;
-            }
-
-            if let Ok(releases) = Releases::of(&args.package) {
-                if let Some(release) = releases.first() {
-                    return release.tag_name.clone();
-                }
-            }
-
-            if let Ok(branch) = DefaultBranch::of(&args.package) {
-                return branch.commit.sha;
-            }
-
-            "main".to_string()
-        }),
+        version: args.version.unwrap_or_else(default_version),
         source: Platform::Github,
     };
 
