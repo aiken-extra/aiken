@@ -4,7 +4,6 @@ use reqwest::{
     header::USER_AGENT,
     Error,
 };
-use std::time::Duration;
 
 enum Get {
     Releases,
@@ -126,9 +125,7 @@ fn http_get<Repo: AsRef<str>, Param: AsRef<str>>(
         Get::Info => "",
     });
 
-    Client::builder()
-        .timeout(Duration::from_secs(5)) // it's not cool waiting for too long
-        .build()?
+    Client::new()
         .get(url)
         .header(USER_AGENT, "aiken-lang")
         .send()
